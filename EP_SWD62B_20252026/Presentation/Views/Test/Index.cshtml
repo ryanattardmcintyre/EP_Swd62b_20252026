@@ -1,0 +1,33 @@
+﻿@model Presentation.Models.TestModel
+
+<h1>Test Page</h1>
+
+<hr>
+
+<h2>Author : @Model.Author</h2>
+<h3>Message: @Model.Message</h3>
+<p>
+Last Updated:   @Model.DatePublished.ToString("d/MM/yyyy")
+</p>
+<hr>
+
+<form method="post" action="/Test/SubmitForm">
+   <table>
+       <tr>
+           <td>Author</td><td><input type="text" name="Author" /></td>
+       </tr>
+
+        <tr>
+            <td>Message</td>
+            <td><textarea rows="3" cols="10" name="Message"></textarea></td>
+        </tr>
+    </table>
+
+    <input type="submit" value="Submit" />
+</form>
+
+@if (ViewBag.WordCount != null)
+{
+    <span style="color:red">@ViewBag.WordCount</span>
+}
+
