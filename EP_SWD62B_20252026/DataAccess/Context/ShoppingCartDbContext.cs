@@ -24,10 +24,12 @@ namespace DataAccess.Context
         {
         }
 
-
         public DbSet<Book> Books { get; set; }
         public DbSet<Order> Orders { get; set; }
         public DbSet<Category> Categories { get; set; }
         public DbSet<OrderItem> OrderItems { get; set; }
+
+
+        //to do: configure lazy loading and guid auto generation
     }
 }
