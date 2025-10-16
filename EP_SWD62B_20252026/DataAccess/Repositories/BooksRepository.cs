@@ -40,7 +40,6 @@ namespace DataAccess.Repositories
         }
 
         public void Add(Book book) { 
-        
             _context.Books.Add(book);
             _context.SaveChanges(); 
         }

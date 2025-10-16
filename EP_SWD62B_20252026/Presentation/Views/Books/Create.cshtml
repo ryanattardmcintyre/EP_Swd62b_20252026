@@ -1,0 +1,29 @@
+﻿@model Domain.Models.Book //This is the model the page will respect by allowing us to access the properties of Book via Model
+
+
+
+<form method="post" action="/Books/Create">
+        <table>
+            <tr>
+                <td>Title</td>
+                <td><input type="text" name="Title" /></td>
+            </tr>
+            <tr>
+                <td>Category</td>
+                <td><input type="number" name="CategoryFK" /></td>
+            </tr>
+            <tr>
+                <td>Wholesale price</td>
+                <td><input type="number" name="WholesalePrice" /></td>
+            </tr>
+            <tr>
+                <td>Published Year</td>
+                <td><input type="number" name="PublishedYear" /></td>
+            </tr>
+            <tr>
+                <td>Stock</td>
+                <td><input type="number" name="Stock" /></td>
+            </tr>
+        </table>
+        <input type="submit" value="Submit" />
+</form>

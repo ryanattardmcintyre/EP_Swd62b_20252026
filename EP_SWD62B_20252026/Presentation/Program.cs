@@ -2,6 +2,8 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Presentation.Data;
 using DataAccess.Context;
+using DataAccess.Repositories;
+using Presentation.Controllers;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -15,7 +17,29 @@ builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.Requ
     .AddEntityFrameworkStores<ShoppingCartDbContext>();
 builder.Services.AddControllersWithViews();
 
+
+//These lines will register the service BooksRepository with a list of 
+//known services the CLR can instantiate
+
+/* Why do you go for Scoped/ transient/ Singleton
+ * 
+ *  Scoped -> it will create a new instance per request per user
+ *  Transient -> it will create a new instance per call per request per user
+ *  Singleton -> it will create a new instance per application
+ *  
+ */
+
+//BooksRepository is also referred to as a service
+
+builder.Services.AddScoped(typeof(BooksRepository));
+//builder.Services.AddTransient(typeof(BooksRepository));
+//builder.Services.AddSingleton(typeof(BooksRepository));
+
 var app = builder.Build();
+
+//Property injection:
+//BooksController controller = new BooksController(null);
+//controller._booksRepository = (BooksRepository)app.Services.GetService(typeof(BooksRepository));
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
