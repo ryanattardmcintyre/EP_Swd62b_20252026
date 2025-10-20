@@ -1,6 +1,7 @@
 ﻿using DataAccess.Repositories;
 using Domain.Models;
 using Microsoft.AspNetCore.Mvc;
+using Presentation.Models;
 
 namespace Presentation.Controllers
 {
@@ -13,19 +14,24 @@ namespace Presentation.Controllers
         }
 
         [HttpGet]//loads a page with empty input controls
-        public IActionResult Create()
+        public IActionResult Create([FromServices] CategoriesRepository categoriesRepository)
         {
-            return View();
+            // BooksCreateViewModel
+            //-> Book
+            //-> List of categories
+            BooksCreateViewModel myModel = new BooksCreateViewModel();
+            myModel.Categories = categoriesRepository.Get().ToList(); //here a call to the db is done
+
+            return View(myModel);
         }
 
         [HttpPost] //handles the submission form
         //Method Injection : use [FromServices] BooksRepository _booksRepository in the parameter list
-        public IActionResult Create(Book b)
+        public IActionResult Create(BooksCreateViewModel b, [FromServices] CategoriesRepository categoriesRepository)
         {
             try
             {
-                
-                _booksRepository.Add(b);
+                _booksRepository.Add(b.Book);
 
                 //Ways how you can pass data from the server side (i.e. controller) to the client side  (i.e. views)
                 //TempData = it survives a redirection (if i redirect the user to Index page instead, TempData is still accessible)
@@ -37,10 +43,11 @@ namespace Presentation.Controllers
                 //Models = so we can edit the Book class, add a property called Feedback and we set it with the data we want to pass back to the page
 
                 TempData["success"] = "Book created successfully";
-                return View(); //<- loading back the View where the request came from with no book's data
+                return RedirectToAction("Create"); //<- loading back the View where the request came from with no book's data
             }
             catch (Exception ex)
             {
+                b.Categories = categoriesRepository.Get().ToList();
                 //log the error
                 TempData["failure"] = "Error occurred. Book wasn't saved. Try again later we're working on it";
                 return View(b); //<- loading back the View where the request came from with the submitted data
@@ -50,13 +57,32 @@ namespace Presentation.Controllers
         }
 
 
-        /*public IActionResult Index()
+        public IActionResult Update(int id, [FromServices] CategoriesRepository categoriesRepository)
         {
-            var books = _booksRepository.Get();
+            BooksCreateViewModel myModel = new BooksCreateViewModel();
+            myModel.Categories = categoriesRepository.Get().ToList(); //here a call to the db is done
+            myModel.Book = _booksRepository.Get(id);
+
+            return View(myModel);
         }
 
-        public IActionResult Delete() {
-            _booksRepository.Delete(1);
-        }*/
+        [HttpPost]
+        public IActionResult Update(BooksCreateViewModel b, [FromServices] CategoriesRepository categoriesRepository)
+        {
+            try
+            {
+                _booksRepository.Update(b.Book);
+                TempData["success"] = "Book updated successfully";
+                return RedirectToAction("Update", new { id = b.Book.Id}); 
+            }
+            catch (Exception ex)
+            {
+                b.Categories = categoriesRepository.Get().ToList();
+                //log the error
+                TempData["failure"] = "Error occurred. Book wasn't saved. Try again later we're working on it";
+                return View(b); //<- loading back the View where the request came from with the submitted data
+
+            }
+        }
     }
 }

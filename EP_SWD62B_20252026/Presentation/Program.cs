@@ -32,6 +32,7 @@ builder.Services.AddControllersWithViews();
 //BooksRepository is also referred to as a service
 
 builder.Services.AddScoped(typeof(BooksRepository));
+builder.Services.AddScoped(typeof(CategoriesRepository));
 //builder.Services.AddTransient(typeof(BooksRepository));
 //builder.Services.AddSingleton(typeof(BooksRepository));
 

@@ -1,12 +1,14 @@
 ﻿@model Presentation.Models.BooksCreateViewModel
-@* ViewModel has: Book (Domain.Models.Book) and IEnumerable<Category> Categories or a SelectList CategoryOptions *@
 
-<form asp-action="Create" method="post" class="needs-validation" novalidate>
+<form action="/Books/Update" method="post" class="needs-validation" novalidate>
     @Html.AntiForgeryToken()
+
+    <input type="hidden" name="Book.Id" value="@Model.Book.Id" />
+
 
     <div class="card shadow-sm">
         <div class="card-header">
-            <h5 class="mb-0">Add Book</h5>
+            <h5 class="mb-0">Update Book</h5>
         </div>
 
         <div class="card-body">
@@ -20,16 +22,22 @@
 
             <div class="mb-3">
                 <label asp-for="Book.CategoryFK" class="form-label">Category</label>
-                <select name="Book.CategoryFK"> 
-                    <option value="-1">Pick a category</option> 
-                    @if(Model.Categories != null) 
+                <select name="Book.CategoryFK">
+                    <option value="-1">Pick a category</option>
+                    @if (Model.Categories != null)
                     {
-                        foreach(var cat in Model.Categories) 
+                        foreach (var cat in Model.Categories)
                         {
-                            <option value="@cat.Id">@cat.Name</option>
-                         }
+                            if(Model.Book.CategoryFK == cat.Id)
+                            {<option value="@cat.Id" selected>@cat.Name</option>
+                            }
+                            else
+                            {
+                                <option value="@cat.Id" >@cat.Name</option>
+                            }
+                        }
                     }
-                    </select>
+                </select>
                 <span asp-validation-for="Book.CategoryFK" class="text-danger"></span>
             </div>
 
