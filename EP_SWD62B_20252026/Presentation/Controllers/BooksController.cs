@@ -84,5 +84,26 @@ namespace Presentation.Controllers
 
             }
         }
+
+
+        [HttpGet]
+        public IActionResult Index()
+        {
+            //IQueryable >> prepares an sql statement
+            //ToList<> or AsEnumerable() open a connection with the database
+            //when you run the ToList() it also enables you inspect the data
+            List<Book> list = _booksRepository.Get().ToList();
+            return View(list); //a call will be initiated with the database
+        
+        }
+
+        [HttpPost]
+        public IActionResult Index(string keyword)
+        {
+            var filteredList = _booksRepository.Get(keyword);
+            return View(filteredList);
+        }
+
+
     }
 }

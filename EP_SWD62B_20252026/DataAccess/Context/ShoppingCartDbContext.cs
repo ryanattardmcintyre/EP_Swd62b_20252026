@@ -30,6 +30,13 @@ namespace DataAccess.Context
         public DbSet<OrderItem> OrderItems { get; set; }
 
 
+        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        {
+          
+                optionsBuilder.UseLazyLoadingProxies();
+            
+        }
+
         //to do: configure lazy loading and guid auto generation
     }
 }
