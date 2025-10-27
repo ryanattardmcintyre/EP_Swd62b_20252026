@@ -12,5 +12,6 @@ namespace Presentation.Models
         }
         public Book Book { get; set; }
         public List<Category> Categories { get; set; }
+        public IFormFile UpdatedFile { get; set; }
     }
 }

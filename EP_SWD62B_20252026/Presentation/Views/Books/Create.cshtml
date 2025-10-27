@@ -1,7 +1,7 @@
 ﻿@model Presentation.Models.BooksCreateViewModel
 @* ViewModel has: Book (Domain.Models.Book) and IEnumerable<Category> Categories or a SelectList CategoryOptions *@
 
-<form asp-action="Create" method="post" class="needs-validation" novalidate>
+<form enctype="multipart/form-data"   asp-action="Create" method="post" class="needs-validation" novalidate>
     @Html.AntiForgeryToken()
 
     <div class="card shadow-sm">
@@ -50,6 +50,12 @@
                     <label asp-for="Book.Stock" class="form-label"></label>
                     <input asp-for="Book.Stock" class="form-control" min="0" />
                     <span asp-validation-for="Book.Stock" class="text-danger"></span>
+                </div>
+
+                <div class="col-md-4 mb-3">
+                    <label class="form-label">Upload a file</label>
+        <!-- the name attribute has to hold the property to which the file control value is going to be mapped to   -->
+                    <input type="file" class="form-control" name="UpdatedFile" />
                 </div>
             </div>
         </div>

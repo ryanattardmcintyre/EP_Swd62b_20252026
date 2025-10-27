@@ -20,6 +20,7 @@ namespace Domain.Models
         public virtual Category Category { get; set; } //this is called a navigational property
         public int CategoryFK { get; set; } //this is a foreign key
         public int Stock { get; set; }
+        public string? Path { get; set; }
 
     }
 }

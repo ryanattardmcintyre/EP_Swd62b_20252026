@@ -27,10 +27,33 @@ namespace Presentation.Controllers
 
         [HttpPost] //handles the submission form
         //Method Injection : use [FromServices] BooksRepository _booksRepository in the parameter list
-        public IActionResult Create(BooksCreateViewModel b, [FromServices] CategoriesRepository categoriesRepository)
+
+        //Application Services: CategoriesRepository
+        //Framework Services: IWebHostEnvironment
+        public IActionResult Create(BooksCreateViewModel b, 
+            [FromServices] CategoriesRepository categoriesRepository,
+            [FromServices] IWebHostEnvironment host)
         {
             try
             {
+                if(b.UpdatedFile != null)
+                {
+                    //we have a file
+                    //generate a unique filename //3EDBEEA5-D8B4-42AD-9B70-E9C9D6DA1EBD
+                    string uniqueFilename = Guid.NewGuid().ToString() + System.IO.Path.GetExtension(b.UpdatedFile.FileName);
+
+                    //C:\Users\attar\source\repos\EP_Swd62b_20252026\EP_SWD62B_20252026\Presentation\wwwroot
+                    //file needs to be saved
+                    string absolutePath = host.WebRootPath + "/images/" + uniqueFilename;
+
+                    using (var mySavingStream = new FileStream(absolutePath, FileMode.CreateNew))
+                    {
+                        b.UpdatedFile.CopyTo(mySavingStream);
+                    }
+
+                    b.Book.Path = "/images/" + uniqueFilename;
+                }
+
                 _booksRepository.Add(b.Book);
 
                 //Ways how you can pass data from the server side (i.e. controller) to the client side  (i.e. views)
