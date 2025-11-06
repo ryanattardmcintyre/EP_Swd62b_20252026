@@ -4,6 +4,8 @@ using Presentation.Data;
 using DataAccess.Context;
 using DataAccess.Repositories;
 using Presentation.Controllers;
+using Domain.Interfaces;
+using DataAccess.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -33,6 +35,10 @@ builder.Services.AddControllersWithViews();
 
 builder.Services.AddScoped(typeof(BooksRepository));
 builder.Services.AddScoped(typeof(CategoriesRepository));
+builder.Services.AddScoped(typeof(OrdersRepository));
+
+builder.Services.AddScoped(typeof(ICalculatingTotal), typeof(NoPromotion));
+
 //builder.Services.AddTransient(typeof(BooksRepository));
 //builder.Services.AddSingleton(typeof(BooksRepository));
 

@@ -128,5 +128,34 @@ namespace Presentation.Controllers
         }
 
 
+        [HttpGet] //optional only when there just one method named that way
+        public IActionResult Details(int id)
+        {
+            var book = _booksRepository.Get(id);
+            return View(book);
+            
+        }
+
+        [HttpPost]
+        public IActionResult Delete(int[] ids)
+        {
+            try
+            {
+                foreach (int x in ids)
+                {
+                    _booksRepository.Delete(x);
+                }
+                TempData["success"] = "Book(s) deleted successfully";
+            }
+            catch (Exception ex)
+            {
+                TempData["failure"] = "Books were not deleted. Try again";
+                //log the message
+            }
+
+            return RedirectToAction("Index");
+        }
+
+
     }
 }
