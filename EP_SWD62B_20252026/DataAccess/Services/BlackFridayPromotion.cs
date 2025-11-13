@@ -22,7 +22,7 @@ namespace DataAccess.Services
             foreach (var item in buyingItems)
             {
                 var book = _booksRepository.Get(item.BookFK);
-                total += book.WholesalePrice;
+                total += (book.WholesalePrice*item.Qty);
             }
 
             return total * .5;

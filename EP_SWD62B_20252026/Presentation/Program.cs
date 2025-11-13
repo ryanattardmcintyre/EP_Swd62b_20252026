@@ -37,7 +37,16 @@ builder.Services.AddScoped(typeof(BooksRepository));
 builder.Services.AddScoped(typeof(CategoriesRepository));
 builder.Services.AddScoped(typeof(OrdersRepository));
 
-builder.Services.AddScoped(typeof(ICalculatingTotal), typeof(NoPromotion));
+//switch between different promotions according to a setting in the appsettings.json
+var promotion = builder.Configuration.GetValue<string>("promotion");
+if (promotion != null)
+{
+    if (promotion.ToLower() == "blackfriday")
+        builder.Services.AddScoped(typeof(ICalculatingTotal), typeof(BlackFridayPromotion));
+    else
+        builder.Services.AddScoped(typeof(ICalculatingTotal), typeof(NoPromotion));
+}
+else builder.Services.AddScoped(typeof(ICalculatingTotal), typeof(NoPromotion)); //default
 
 //builder.Services.AddTransient(typeof(BooksRepository));
 //builder.Services.AddSingleton(typeof(BooksRepository));

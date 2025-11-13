@@ -1,4 +1,5 @@
 ﻿using DataAccess.Repositories;
+using Domain.Interfaces;
 using Domain.Models;
 using Microsoft.AspNetCore.Mvc;
 using Presentation.Models;
@@ -9,8 +10,13 @@ namespace Presentation.Controllers
     {
         //Contructor Injection is one of the variations of DEPENDENCY INJECTION
         private BooksRepository _booksRepository { get; set; }
-        public BooksController(BooksRepository booksRepository) {
+        private ICalculatingTotal _calculatingService { get; set; }
+        private OrdersRepository _ordersRepository { get; set; }
+        public BooksController(BooksRepository booksRepository, ICalculatingTotal calculatingService
+            , OrdersRepository ordersRepository) {
          _booksRepository = booksRepository;
+            _ordersRepository = ordersRepository;
+            _calculatingService = calculatingService;
         }
 
         [HttpGet]//loads a page with empty input controls
@@ -136,8 +142,8 @@ namespace Presentation.Controllers
             
         }
 
-        [HttpPost]
-        public IActionResult Delete(int[] ids)
+        
+        private IActionResult Delete(int[] ids)
         {
             try
             {
@@ -156,6 +162,44 @@ namespace Presentation.Controllers
             return RedirectToAction("Index");
         }
 
+        public IActionResult Execute(int[] ids, int[]quantities, string todo)
+        { 
+            if(todo.ToLower() == "delete")
+            {
+                return Delete(ids);
+            }
+            else if(todo.ToLower() == "checkout")
+            {
+                List<OrderItem> items = new List<OrderItem>();
+                for (int i = 0; i < ids.Length; i++)
+                {
+                    if (quantities[i] > 0)
+                    {
+                        items.Add(new OrderItem()
+                        {
+                            BookFK = ids[i],
+                            Qty = quantities[i]
+                        });
+                    }
+                }
+               return Buy(items);
+            }
+            return RedirectToAction("Index");
+        }
+
+        private IActionResult Buy(List<OrderItem> orderItems)
+        {
+            Order order = new Order();
+            order.DatePlaced = DateTime.Now;
+            order.Username = "";
+
+            _ordersRepository.Checkout(order, orderItems, _booksRepository);
+            double finalTotal = _calculatingService.Calculate(orderItems);
+
+            TempData["success"] = $"Final Total withdrawn is {finalTotal}";
+
+            return RedirectToAction("Index", "Books"); //this is how to redirect to an action INSIDE ANOTHER CONTROLLER
+        }
 
     }
 }

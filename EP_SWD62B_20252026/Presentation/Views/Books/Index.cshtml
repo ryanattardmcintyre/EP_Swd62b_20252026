@@ -158,8 +158,13 @@
 
 
 
-    <form method="post" action="/Books/Delete">
-            <input type="submit" value="Delete" class="btn btn-danger" onclick="return window.confirm('Are you sure?')" />
+    <form method="post" action="/Books/Execute">
+            <input type="submit" value="Delete" class="btn btn-danger" name="todo"
+            onclick="return window.confirm('Are you sure you want to delete these?')" />
+
+            <input type="submit" value="Checkout" class="btn btn-warning" name="todo"
+            onclick="return window.confirm('Are you sure you want to buy these?')" />
+
 
             <div class="cards">
         @foreach (var b in Model)
@@ -195,6 +200,10 @@
                 <div class="row" style="margin-top:.3rem;">
                     <span class="pill price">€ @b.WholesalePrice.ToString("0.00")</span>
                     <span class="@stockClass">@((b.Stock <= 0) ? "Out of stock" : $"Stock: {b.Stock}")</span>
+                </div>
+
+                <div class="row" style="margin-top:.6rem;">
+                    <input type="number" name="quantities" class="form-control"/>
                 </div>
 
                 <div class="actions">
