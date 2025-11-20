@@ -159,12 +159,17 @@
 
 
     <form method="post" action="/Books/Execute">
+            
+        @if(User.Identity.IsAuthenticated)
+        {
+           if(User.Identity.Name == "ryan.attard@mcast.edu.mt")
+           {
             <input type="submit" value="Delete" class="btn btn-danger" name="todo"
             onclick="return window.confirm('Are you sure you want to delete these?')" />
-
+           }
             <input type="submit" value="Checkout" class="btn btn-warning" name="todo"
             onclick="return window.confirm('Are you sure you want to buy these?')" />
-
+        }
 
             <div class="cards">
         @foreach (var b in Model)
