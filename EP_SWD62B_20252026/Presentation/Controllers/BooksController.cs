@@ -1,6 +1,7 @@
 ﻿using DataAccess.Repositories;
 using Domain.Interfaces;
 using Domain.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Presentation.Models;
 
@@ -162,6 +163,7 @@ namespace Presentation.Controllers
             return RedirectToAction("Index");
         }
 
+        [Authorize] //which stops anyone who is not logged in from accessing the action
         public IActionResult Execute(int[] ids, int[]quantities, string todo)
         { 
             if(todo.ToLower() == "delete")
@@ -191,7 +193,7 @@ namespace Presentation.Controllers
         {
             Order order = new Order();
             order.DatePlaced = DateTime.Now;
-            order.Username = "";
+            order.Username = User.Identity.Name; //this gives you the email address of the logged in user
 
             _ordersRepository.Checkout(order, orderItems, _booksRepository);
             double finalTotal = _calculatingService.Calculate(orderItems);
