@@ -17,7 +17,7 @@ namespace DataAccess.Context
     //if we apply IdentityDbContext - it will automatically create tables (which the spec is hidden) that will
     //manage user accounts e.g. AspNetUsers, AspNetRoles, ....
     //Do you want to use User Accounts?
-    public class ShoppingCartDbContext : IdentityDbContext //or DbContext
+    public class ShoppingCartDbContext : IdentityDbContext<CustomUser> //or DbContext
     {
         public ShoppingCartDbContext(DbContextOptions<ShoppingCartDbContext> options)
             : base(options)

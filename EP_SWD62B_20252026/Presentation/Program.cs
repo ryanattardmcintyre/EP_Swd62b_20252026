@@ -6,6 +6,7 @@ using DataAccess.Repositories;
 using Presentation.Controllers;
 using Domain.Interfaces;
 using DataAccess.Services;
+using Domain.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -15,7 +16,7 @@ builder.Services.AddDbContext<ShoppingCartDbContext>(options =>
     options.UseSqlServer(connectionString));
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
-builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
+builder.Services.AddDefaultIdentity<CustomUser>(options => options.SignIn.RequireConfirmedAccount = true)
     .AddEntityFrameworkStores<ShoppingCartDbContext>();
 builder.Services.AddControllersWithViews();
 
