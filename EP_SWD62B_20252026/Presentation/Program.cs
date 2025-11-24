@@ -34,7 +34,11 @@ builder.Services.AddControllersWithViews();
 
 //BooksRepository is also referred to as a service
 
-builder.Services.AddScoped(typeof(BooksRepository));
+//builder.Services.AddScoped(typeof(BooksRepository));
+//KeyedScoped will allow us to use both implementations with the same controller
+builder.Services.AddKeyedScoped(typeof(IBooksRepository), "db", typeof(BooksRepository));
+builder.Services.AddKeyedScoped(typeof(IBooksRepository), "file", typeof(BooksFileRepository));
+
 builder.Services.AddScoped(typeof(CategoriesRepository));
 builder.Services.AddScoped(typeof(OrdersRepository));
 
@@ -43,7 +47,13 @@ var promotion = builder.Configuration.GetValue<string>("promotion");
 if (promotion != null)
 {
     if (promotion.ToLower() == "blackfriday")
-        builder.Services.AddScoped(typeof(ICalculatingTotal), typeof(BlackFridayPromotion));
+    {
+       // builder.Services.AddScoped(typeof(ICalculatingTotal), typeof(BlackFridayPromotion));
+        builder.Services.AddScoped(typeof(ICalculatingTotal), 
+            o => new BlackFridayPromotion(
+                 o.GetRequiredKeyedService<BooksRepository>("db")
+                ));
+    }
     else
         builder.Services.AddScoped(typeof(ICalculatingTotal), typeof(NoPromotion));
 }
@@ -51,6 +61,8 @@ else builder.Services.AddScoped(typeof(ICalculatingTotal), typeof(NoPromotion));
 
 //builder.Services.AddTransient(typeof(BooksRepository));
 //builder.Services.AddSingleton(typeof(BooksRepository));
+
+
 
 var app = builder.Build();
 

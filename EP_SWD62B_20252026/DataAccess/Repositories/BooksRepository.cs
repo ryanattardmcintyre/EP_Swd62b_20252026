@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using DataAccess.Context;
+using Domain.Interfaces;
 using Domain.Models;
 namespace DataAccess.Repositories
 {
@@ -17,7 +18,7 @@ namespace DataAccess.Repositories
     //IQueryable = it doesn't execute the command - it prepares an SQL command
     //IEnumerable = every command is executed i.e. it opens a connection
 
-    public class BooksRepository
+    public class BooksRepository: IBooksRepository
     {
         //This is called constructor injection
         private ShoppingCartDbContext _context;

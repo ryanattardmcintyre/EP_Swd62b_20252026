@@ -1,0 +1,3 @@
+{"Category":{"Id":1,"Name":"Computer Science"},"Id":1,"Title":"Intro to EP","WholesalePrice":20.0,"PublishedYear":2020,"CategoryFK":1,"Stock":99,"Path":null}
+{"Category":{"Id":1,"Name":"Computer Science"},"Id":6,"Title":"book with a picture","WholesalePrice":100.0,"PublishedYear":2025,"CategoryFK":1,"Stock":5,"Path":"/images/29cce14e-b4f5-429b-ae2e-c3bb7ec547c6.jfif"}
+{"Category":{"Id":1,"Name":"Computer Science"},"Id":7,"Title":"book about ai","WholesalePrice":15.0,"PublishedYear":2024,"CategoryFK":1,"Stock":50,"Path":"/images/4cb488d0-e179-4ad4-b953-4563ee72ce93.jfif"}
