@@ -7,6 +7,7 @@ using Presentation.Controllers;
 using Domain.Interfaces;
 using DataAccess.Services;
 using Domain.Models;
+using Presentation.Factory;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -41,6 +42,9 @@ builder.Services.AddKeyedScoped(typeof(IBooksRepository), "file", typeof(BooksFi
 
 builder.Services.AddScoped(typeof(CategoriesRepository));
 builder.Services.AddScoped(typeof(OrdersRepository));
+builder.Services.AddScoped(typeof(JournalsRepository));
+
+//builder.Services.AddScoped(typeof(BookFactory));
 
 //switch between different promotions according to a setting in the appsettings.json
 var promotion = builder.Configuration.GetValue<string>("promotion");

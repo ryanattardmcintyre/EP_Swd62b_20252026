@@ -1,5 +1,4 @@
 ﻿using Domain.Interfaces;
-using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -10,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace Domain.Models
 {
-    public class Book: IPaper
+    public class Journal: IPaper
     {
         [Key(), DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
@@ -23,11 +22,12 @@ namespace Domain.Models
         public int CategoryFK { get; set; } //this is a foreign key
         public int Stock { get; set; }
         public string? Path { get; set; }
+        public int Volume { get; set; }
+        public int IssueNo { get; set; }
 
         public string Get()
         {
-            return $"{Title} | {WholesalePrice}";
+            return $"{Title} | {WholesalePrice} | {Volume}:{IssueNo}";
         }
-
     }
 }
