@@ -3,23 +3,28 @@ using Domain.Interfaces;
 using Domain.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.DependencyInjection;
+using Presentation.ActionFilters;
 using Presentation.Models;
 
 namespace Presentation.Controllers
 {
+
+    [Authorize]
     public class BooksController : Controller
     {
         //Contructor Injection is one of the variations of DEPENDENCY INJECTION
         private BooksRepository _booksRepository { get; set; }
         private ICalculatingTotal _calculatingService { get; set; }
         private OrdersRepository _ordersRepository { get; set; }
-        public BooksController(BooksRepository booksRepository, ICalculatingTotal calculatingService
+        public BooksController([FromKeyedServices("db")] IBooksRepository booksRepository, ICalculatingTotal calculatingService
             , OrdersRepository ordersRepository) {
-         _booksRepository = booksRepository;
+         _booksRepository = (BooksRepository) booksRepository;
             _ordersRepository = ordersRepository;
             _calculatingService = calculatingService;
         }
 
+        
         [HttpGet]//loads a page with empty input controls
         public IActionResult Create([FromServices] CategoriesRepository categoriesRepository)
         {
@@ -117,6 +122,7 @@ namespace Presentation.Controllers
 
 
         [HttpGet]
+        [AllowAnonymous]
         public IActionResult Index()
         {
             //IQueryable >> prepares an sql statement
@@ -128,6 +134,8 @@ namespace Presentation.Controllers
         }
 
         [HttpPost]
+        [AllowAnonymous]
+        [ServiceFilter(typeof( FilterKeywordActionFilter)) ]
         public IActionResult Index(string keyword)
         {
             var filteredList = _booksRepository.Get(keyword);
@@ -201,6 +209,11 @@ namespace Presentation.Controllers
             TempData["success"] = $"Final Total withdrawn is {finalTotal}";
 
             return RedirectToAction("Index", "Books"); //this is how to redirect to an action INSIDE ANOTHER CONTROLLER
+        }
+
+        public IActionResult Test()
+        {
+            return View();
         }
 
     }

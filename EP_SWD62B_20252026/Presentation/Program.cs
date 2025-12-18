@@ -8,6 +8,7 @@ using Domain.Interfaces;
 using DataAccess.Services;
 using Domain.Models;
 using Presentation.Factory;
+using Presentation.ActionFilters;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -43,6 +44,7 @@ builder.Services.AddKeyedScoped(typeof(IBooksRepository), "file", typeof(BooksFi
 builder.Services.AddScoped(typeof(CategoriesRepository));
 builder.Services.AddScoped(typeof(OrdersRepository));
 builder.Services.AddScoped(typeof(JournalsRepository));
+builder.Services.AddScoped(typeof(FilterKeywordActionFilter));
 
 //builder.Services.AddScoped(typeof(BookFactory));
 
@@ -55,7 +57,7 @@ if (promotion != null)
        // builder.Services.AddScoped(typeof(ICalculatingTotal), typeof(BlackFridayPromotion));
         builder.Services.AddScoped(typeof(ICalculatingTotal), 
             o => new BlackFridayPromotion(
-                 o.GetRequiredKeyedService<BooksRepository>("db")
+                 (BooksRepository) o.GetRequiredKeyedService<IBooksRepository>("db")
                 ));
     }
     else
