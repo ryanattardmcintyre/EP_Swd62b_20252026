@@ -7,13 +7,8 @@ using System.Threading.Tasks;
 
 namespace Domain.Interfaces
 {
-    public interface IBooksRepository
+    public interface IOrdersRepository
     {
-        IQueryable<Book> Get(); //read
-        void Add(Book book); //write
-
-        Book Get(int id);
-        void Update(Book book); 
-        
+        void Checkout(Order order, List<OrderItem> orderItems, IBooksRepository booksRepo);
     }
 }

@@ -14,14 +14,24 @@ namespace Presentation.Controllers
     public class BooksController : Controller
     {
         //Contructor Injection is one of the variations of DEPENDENCY INJECTION
+
+        private ILogger<BooksController> _logger;
         private BooksRepository _booksRepository { get; set; }
         private ICalculatingTotal _calculatingService { get; set; }
-        private OrdersRepository _ordersRepository { get; set; }
+        private IOrdersRepository _ordersRepository { get; set; }
+
+        //tightly coupled is when the data type for injection allows only 1 data type to be injected
+        //loosely coupled is when the data type for injection allows for more than 1 data type to be injecte
         public BooksController([FromKeyedServices("db")] IBooksRepository booksRepository, ICalculatingTotal calculatingService
-            , OrdersRepository ordersRepository) {
+            , IOrdersRepository ordersRepository
+            , ILogger<BooksController> logger
+            
+            ) {
          _booksRepository = (BooksRepository) booksRepository;
             _ordersRepository = ordersRepository;
             _calculatingService = calculatingService;
+
+            _logger = logger;
         }
 
         
@@ -48,25 +58,44 @@ namespace Presentation.Controllers
         {
             try
             {
+                /* Trace
+                 * Debug
+                 * Error
+                 * Information
+                 * Warning
+                 * Critical
+                 * ...
+                 */ 
+
+                _logger.LogInformation("Entered the Create action");
+
+
                 if(b.UpdatedFile != null)
                 {
                     //we have a file
                     //generate a unique filename //3EDBEEA5-D8B4-42AD-9B70-E9C9D6DA1EBD
                     string uniqueFilename = Guid.NewGuid().ToString() + System.IO.Path.GetExtension(b.UpdatedFile.FileName);
 
+                    _logger.LogInformation("filename generated: " + uniqueFilename);
+
                     //C:\Users\attar\source\repos\EP_Swd62b_20252026\EP_SWD62B_20252026\Presentation\wwwroot
                     //file needs to be saved
                     string absolutePath = host.WebRootPath + "/images/" + uniqueFilename;
+
+                    _logger.LogWarning("About to start saving the file on server's disk...");
 
                     using (var mySavingStream = new FileStream(absolutePath, FileMode.CreateNew))
                     {
                         b.UpdatedFile.CopyTo(mySavingStream);
                     }
 
+                    _logger.LogCritical("File "+uniqueFilename+" saved!!");
+
                     b.Book.Path = "/images/" + uniqueFilename;
                 }
 
                 _booksRepository.Add(b.Book);
+                _logger.LogCritical("Details of "+ b.Book.Title+ "saved in the database");
 
                 //Ways how you can pass data from the server side (i.e. controller) to the client side  (i.e. views)
                 //TempData = it survives a redirection (if i redirect the user to Index page instead, TempData is still accessible)
@@ -84,6 +113,13 @@ namespace Presentation.Controllers
             {
                 b.Categories = categoriesRepository.Get().ToList();
                 //log the error
+
+                string bookidentification = "Id: " + b.Book.Id + " | Name: " + b.Book.Title;
+                if (b.UpdatedFile != null) bookidentification += " | Uploaded file: " + b.UpdatedFile.FileName;
+                 
+
+                _logger.LogError(ex, "...while trying to create a book " + bookidentification);
+
                 TempData["failure"] = "Error occurred. Book wasn't saved. Try again later we're working on it";
                 return View(b); //<- loading back the View where the request came from with the submitted data
 

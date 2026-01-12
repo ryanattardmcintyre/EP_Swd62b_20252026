@@ -9,6 +9,7 @@ using DataAccess.Services;
 using Domain.Models;
 using Presentation.Factory;
 using Presentation.ActionFilters;
+using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -29,7 +30,7 @@ builder.Services.AddControllersWithViews();
 /* Why do you go for Scoped/ transient/ Singleton
  * 
  *  Scoped -> it will create a new instance per request per user
- *  Transient -> it will create a new instance per call per request per user
+ *  Transient -> it will create a new instance per method call per request per user
  *  Singleton -> it will create a new instance per application
  *  
  */
@@ -43,6 +44,18 @@ builder.Services.AddKeyedScoped(typeof(IBooksRepository), "file", typeof(BooksFi
 
 builder.Services.AddScoped(typeof(CategoriesRepository));
 builder.Services.AddScoped(typeof(OrdersRepository));
+
+builder.Services.AddScoped<IOrdersRepository>(sp =>
+{
+    var logger = sp.GetRequiredService<ILogger<OrdersLoggingRepository>>();
+    var innerRepo = sp.GetRequiredService<OrdersRepository>();
+
+    return new OrdersLoggingRepository(logger, innerRepo);
+});
+
+
+
+
 builder.Services.AddScoped(typeof(JournalsRepository));
 builder.Services.AddScoped(typeof(FilterKeywordActionFilter));
 
@@ -68,6 +81,15 @@ else builder.Services.AddScoped(typeof(ICalculatingTotal), typeof(NoPromotion));
 //builder.Services.AddTransient(typeof(BooksRepository));
 //builder.Services.AddSingleton(typeof(BooksRepository));
 
+var log = new LoggerConfiguration().WriteTo.File(
+               "logs/log.txt",
+               rollingInterval: RollingInterval.Day,
+               restrictedToMinimumLevel: Serilog.Events.LogEventLevel.Information)
+               .CreateLogger();
+
+
+builder.Logging.AddSerilog(log);
+
 
 
 var app = builder.Build();
@@ -83,9 +105,11 @@ if (app.Environment.IsDevelopment())
 }
 else
 {
-    app.UseExceptionHandler("/Home/Error");
+
+    app.UseMigrationsEndPoint();
+    //app.UseExceptionHandler("/Home/Error");
     // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
-    app.UseHsts();
+    //app.UseHsts();
 }
 
 app.UseHttpsRedirection();

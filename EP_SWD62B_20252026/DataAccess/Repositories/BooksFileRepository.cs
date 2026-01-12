@@ -31,5 +31,15 @@ namespace DataAccess.Repositories
 
             return books.AsQueryable();
         }
+
+        public Book Get(int id)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void Update(Book book)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

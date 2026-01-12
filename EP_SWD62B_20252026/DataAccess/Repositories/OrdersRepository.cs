@@ -1,4 +1,5 @@
 ﻿using DataAccess.Context;
+using Domain.Interfaces;
 using Domain.Models;
 using System;
 using System.Collections.Generic;
@@ -8,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace DataAccess.Repositories
 {
-    public class OrdersRepository
+    public class OrdersRepository: IOrdersRepository
     {
         private ShoppingCartDbContext _context;
         public OrdersRepository(ShoppingCartDbContext context)
@@ -26,7 +27,7 @@ namespace DataAccess.Repositories
             _context.Orders.Add(order);
             _context.SaveChanges();
         }
-        public void Checkout(Order order, List<OrderItem> orderItems, BooksRepository booksRepo)
+        public void Checkout(Order order, List<OrderItem> orderItems, IBooksRepository booksRepo)
         {
             order.Id = Guid.NewGuid(); //i'm controlling the id of the Order
             AddOrder(order);
